@@ -6,9 +6,9 @@ def parse_excel(file):
     keywords = {
         'revenue': ['revenue', 'total revenue'],
         'growth': ['growth', 'revenue growth'],
-        'margin': ['ebitda margin', 'margin'],
-        'wacc': ['wacc', 'weighted average cost'],
-        'terminal': ['terminal growth', 'terminal', 'long-term growth']
+        'margin': ['margin', 'ebitda margin'],
+        'wacc': ['wacc', 'wacc estimate', 'discount rate'],
+        'terminal': ['terminal', 'terminal growth', 'terminal rate']
     }
 
     results = {}
@@ -20,8 +20,11 @@ def parse_excel(file):
         label = str(row[0]).lower().strip()
         value = row[1]
 
-        for key, words in keywords.items():
-            if any(word in label for word in words):
-                results[key] = float(value)
+        for key, options in keywords.items():
+            if any(k in label for k in options):
+                try:
+                    results[key] = float(value)
+                except:
+                    pass
 
     return results
