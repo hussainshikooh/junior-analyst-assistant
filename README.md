@@ -8,3 +8,6 @@ input_parser.py
 export_builder.py
 requirements.txt
 README.md (already done ✅)
+git add .
+git commit -m "Added GPT-powered DCF functionality"
+git push origin main
