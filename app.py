@@ -8,10 +8,8 @@ from export_builder import build_output_excel
 st.set_page_config(page_title="GPT DCF Builder", layout="centered")
 st.title("📊 GPT-Powered DCF Generator")
 
-# ✅ Final fix: use environment variable for API key
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-
-
+# GPT is temporarily disabled to isolate the Axios error
+# client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 # Upload Excel file
 uploaded_file = st.file_uploader("Upload your Excel file", type=["xlsx"])
@@ -40,39 +38,23 @@ if uploaded_file:
         value = calculate_dcf(revenue, growth, margin, wacc, terminal)
         st.success(f"📈 Estimated DCF Valuation: ${value:,.2f}")
 
-        # ✅ GPT Prompt - Clean and formatted
-        prompt = (
-            f"Valuation summary:\n"
-            f"- Revenue: ${revenue:,.0f}\n"
-            f"- Growth rate: {growth*100:.1f}%\n"
-            f"- EBITDA margin: {margin*100:.1f}%\n"
-            f"- WACC: {wacc*100:.1f}%\n"
-            f"- Terminal growth rate: {terminal*100:.1f}%\n"
-            f"Write a concise DCF valuation summary."
+        # 🔁 GPT replaced with fallback summary
+        summary = (
+            f"This is a placeholder summary. Revenue: ${revenue:,.0f}, "
+            f"Growth: {growth*100:.1f}%, Margin: {margin*100:.1f}%, "
+            f"WACC: {wacc*100:.1f}%, Terminal Growth: {terminal*100:.1f}%."
         )
 
-        try:
-            st.info("📡 Sending request to GPT...")
-            response = client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": prompt}]
-            )
-            summary = response.choices[0].message.content
-            st.subheader("🧠 GPT Valuation Summary")
-            st.write(summary)
+        st.subheader("🧠 Valuation Summary")
+        st.write(summary)
 
-            file_name = build_output_excel("Company", value, {
-                'Revenue': revenue,
-                'Growth Rate': growth,
-                'EBITDA Margin': margin,
-                'WACC': wacc,
-                'Terminal Growth Rate': terminal
-            }, summary)
+        file_name = build_output_excel("Company", value, {
+            'Revenue': revenue,
+            'Growth Rate': growth,
+            'EBITDA Margin': margin,
+            'WACC': wacc,
+            'Terminal Growth Rate': terminal
+        }, summary)
 
-            with open(file_name, "rb") as file:
-                st.download_button("📥 Download Excel Model", file, file_name)
-
-        except Exception as e:
-            st.error("❌ GPT API request failed.")
-            st.code(str(e))
-
+        with open(file_name, "rb") as file:
+            st.download_button("📥 Download Excel Model", file, file_name)
