@@ -15,6 +15,13 @@ uploaded_file = st.file_uploader("Upload your Excel file", type=["xlsx"])
 if uploaded_file:
     st.success("✅ File uploaded.")
     inputs = parse_excel(uploaded_file)
+    # ✅ Validate required inputs
+    required_keys = ['revenue', 'growth', 'margin', 'wacc', 'terminal']
+    missing = [k for k in required_keys if k not in inputs]
+
+    if missing:
+        st.error(f"Missing input(s): {', '.join(missing)}. Please check your Excel file.")
+        st.stop()
 
     st.subheader("📥 Confirm Inputs")
     revenue = st.number_input("Revenue", value=float(inputs.get('revenue', 100_000_000)))
