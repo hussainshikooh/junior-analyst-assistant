@@ -1,4 +1,5 @@
 import streamlit as st
+import os
 from openai import OpenAI
 from dcf_logic import calculate_dcf
 from input_parser import parse_excel
@@ -7,9 +8,9 @@ from export_builder import build_output_excel
 st.set_page_config(page_title="GPT DCF Builder", layout="centered")
 st.title("📊 GPT-Powered DCF Generator")
 
-# Initialize OpenAI client
-import os
+# ✅ Final fix: use environment variable for API key
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
 
 
 # Upload Excel file
