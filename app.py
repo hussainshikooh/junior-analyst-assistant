@@ -8,7 +8,9 @@ st.set_page_config(page_title="GPT DCF Builder", layout="centered")
 st.title("📊 GPT-Powered DCF Generator")
 
 # Initialize OpenAI client
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+import os
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
 
 # Upload Excel file
 uploaded_file = st.file_uploader("Upload your Excel file", type=["xlsx"])
